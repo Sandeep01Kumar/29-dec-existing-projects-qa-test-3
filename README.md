@@ -1,2 +1,2 @@
 # hao-backprop-test
-test project for backprop integration. Do not touch!
+Python Flask test project for backprop integration. Do not touch!
