@@ -1,6 +1,6 @@
-# Hello World Express
+# hello-world-express
 
-A tutorial project demonstrating Express.js with multiple greeting endpoints. This server provides four HTTP GET endpoints, each returning a different greeting message in plain text.
+A beginner-friendly tutorial project demonstrating Express.js with multiple greeting endpoints. This server provides four simple HTTP GET endpoints that return different greeting messages as plain text.
 
 ## Prerequisites
 
@@ -9,27 +9,23 @@ A tutorial project demonstrating Express.js with multiple greeting endpoints. Th
 
 ## Installation
 
-Install the project dependencies:
-
 ```bash
 npm install
 ```
 
 ## Running the Server
 
-Start the server using npm:
-
 ```bash
 npm start
 ```
 
-Or directly with Node.js:
+Or alternatively:
 
 ```bash
 node server.js
 ```
 
-The server will start and display: `Server running at http://127.0.0.1:3000/`
+The server will start on `http://127.0.0.1:3000`.
 
 ## Available Endpoints
 
@@ -40,9 +36,9 @@ The server will start and display: `Server running at http://127.0.0.1:3000/`
 | `/good-afternoon` | GET | `Good afternoon` |
 | `/good-evening` | GET | `Good evening` |
 
-## Testing the Endpoints
+## Testing
 
-You can test the endpoints using curl:
+You can test the endpoints using curl or your web browser:
 
 ```bash
 # Test root endpoint
@@ -58,13 +54,13 @@ curl http://127.0.0.1:3000/good-afternoon
 curl http://127.0.0.1:3000/good-evening
 ```
 
-Or open the URLs directly in your web browser.
+Or simply open any of the URLs in your web browser.
 
 ## Project Structure
 
 ```
+.
 ├── server.js        # Express.js application entry point
-├── package.json     # npm package manifest
-├── package-lock.json # Dependency lock file (auto-generated)
-└── node_modules/    # Installed dependencies (auto-generated)
+├── package.json     # npm package manifest with dependencies
+└── README.md        # Project documentation
 ```
