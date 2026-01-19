@@ -20,16 +20,20 @@ The server exhibits the following technical deficiencies:
 
 ```bash
 # Step 1: Start the server
+
 node server.js
 
 #### Step 2: Observe no error handling when port is in use
+
 #### In another terminal, start a second instance:
 node server.js
 #### Result: Unhandled 'error' event crashes without explanation
 
 #### Step 3: Kill the server with SIGTERM
+
 kill -SIGTERM <pid>
 #### Result: Immediate termination without graceful shutdown
+
 ```
 
 #### Error Type Classification
@@ -49,30 +53,35 @@ kill -SIGTERM <pid>
 Based on comprehensive research, **the root causes are**:
 
 #### Root Cause #1: Missing Server Error Event Handler
+
 - **Located in**: `server.js` - Lines 6-14 (original file)
 - **Triggered by**: Any server-level error (e.g., port already in use, permission denied)
 - **Evidence**: The original code contains no `server.on('error')` listener
 - **Conclusion**: This is definitive because Node.js EventEmitter throws unhandled errors that crash the process when no error handler is registered
 
 #### Root Cause #2: Missing Graceful Shutdown Handlers
+
 - **Located in**: `server.js` - entire file (no signal handlers present)
 - **Triggered by**: Process termination signals (SIGTERM, SIGINT)
 - **Evidence**: No `process.on('SIGTERM')` or `process.on('SIGINT')` handlers exist
 - **Conclusion**: This is definitive because without signal handlers, the server immediately terminates without closing connections or completing in-flight requests
 
 #### Root Cause #3: Missing Process-Level Error Handlers
+
 - **Located in**: `server.js` - entire file (no handlers present)
 - **Triggered by**: Unhandled exceptions or promise rejections
 - **Evidence**: No `process.on('uncaughtException')` or `process.on('unhandledRejection')` handlers
 - **Conclusion**: This is definitive because unhandled exceptions cause silent crashes with no cleanup
 
 #### Root Cause #4: Missing Client Error Handler
+
 - **Located in**: `server.js` - Lines 6-10 (original file)
 - **Triggered by**: Malformed HTTP requests from clients
 - **Evidence**: No `server.on('clientError')` listener to handle bad requests
 - **Conclusion**: This is definitive because malformed requests will cause unexpected behavior without proper handling
 
 #### Root Cause #5: No Request-Level Error Handling
+
 - **Located in**: `server.js` - Lines 6-10 (original file)
 - **Triggered by**: Any synchronous error during request processing
 - **Evidence**: No try-catch wrapper around the request handler logic
@@ -411,17 +420,21 @@ Test 5: Request logging
 **Validate functionality with integration test command**:
 ```bash
 # Start server in background
+
 node server.js &
 SERVER_PID=$!
 sleep 2
 
 #### Test HTTP response
+
 curl -s http://127.0.0.1:3000/
 #### Expected: Hello, World!
 
 #### Test graceful shutdown
+
 kill -SIGTERM $SERVER_PID
 #### Expected: SIGTERM received. Starting graceful shutdown...
+
 ####          Server closed. Exiting process.
 ```
 
@@ -441,10 +454,12 @@ npm test
 **Confirm performance metrics**:
 ```bash
 # Start server and measure response time
+
 node server.js &
 sleep 2
 time curl -s http://127.0.0.1:3000/ > /dev/null
 # Expected: Real time < 50ms for localhost request
+
 kill -SIGTERM $!
 ```
 
@@ -581,14 +596,17 @@ No Figma screens or URLs were provided for this task. This is a backend server i
 
 ```bash
 # Environment verification
+
 node --version    # v20.19.6
 npm --version     # 11.1.0
 npm install       # Install dependencies
 
 #### Fix verification
+
 npm test          # Run unit tests - All passed
 
 #### Manual verification
+
 node server.js &  # Start server
 curl http://127.0.0.1:3000/  # Test HTTP response
 kill -SIGTERM <pid>  # Test graceful shutdown
