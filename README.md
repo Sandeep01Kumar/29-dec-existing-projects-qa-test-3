@@ -285,27 +285,22 @@ hao-backprop-test/
 
 ## Known Limitations
 
-1. **Entry Point Mismatch:**
-   - The `package.json` specifies `"main": "index.js"`, but `index.js` does not exist
-   - The actual entry point is `server.js`
-   - This does not affect running the server directly with `node server.js`
-
-2. **No Routing:**
+1. **No Routing:**
    - The server responds with the same content for all URL paths
    - All HTTP methods receive the same response
 
-3. **No Error Handling:**
+2. **No Error Handling:**
    - The server does not implement custom error handling
    - Relies on Node.js default behavior for exceptions
 
-4. **No HTTPS Support:**
+3. **No HTTPS Support:**
    - The server only supports HTTP connections
    - Not suitable for transmitting sensitive data
 
-5. **Single Response:**
+4. **Single Response:**
    - All requests return "Hello, World!" regardless of the request content
 
-*Source: package.json (main field), server.js:6-10*
+*Source: server.js:6-10*
 
 ## Contributing
 
