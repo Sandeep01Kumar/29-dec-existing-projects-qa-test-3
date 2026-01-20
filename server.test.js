@@ -1,65 +1,40 @@
 /**
  * Comprehensive Test Suite for Production-Ready HTTP Server
- * 
- * Tests all 9 key functionality areas:
- * 1. GET / returns 200 OK with Hello World
- * 2. HEAD / returns 200 with no body
- * 3. OPTIONS / returns 204 with Allow header
- * 4. POST / returns 405 Method Not Allowed
- * 5. PUT / returns 405 Method Not Allowed
- * 6. DELETE / returns 405 Method Not Allowed
- * 7. Path traversal with ".." returns 400 Bad Request
- * 8. GET /anything returns 200 OK
- * 9. Server handles concurrent requests
- * 
- * @module server.test
+ *
+ * Tests 9 key functionality areas: GET, HEAD, OPTIONS support,
+ * method rejection (POST/PUT/DELETE), path traversal protection,
+ * routing, and concurrent request handling.
  */
 
 const http = require('http');
 
-// ============================================================================
-// Test Configuration
-// ============================================================================
-
-const TEST_PORT = 3001;  // Use different port to avoid conflicts
+// Configuration
+const TEST_PORT = 3001;
 const TEST_HOSTNAME = '127.0.0.1';
-const TEST_TIMEOUT = 10000;  // 10 seconds timeout for each test
+const TEST_TIMEOUT_MS = 10000;
 
-// ============================================================================
-// Test Results Tracking
-// ============================================================================
-
+// Results tracking
 let passed = 0;
 let failed = 0;
 const testResults = [];
 
-// ============================================================================
-// Test Utilities
-// ============================================================================
-
 /**
- * Makes an HTTP request and returns a promise with the response
+ * Makes an HTTP request and returns a promise with the response.
  * @param {object} options - HTTP request options
  * @returns {Promise<{statusCode: number, headers: object, body: string}>}
  */
 function makeRequest(options) {
   return new Promise((resolve, reject) => {
     const timeoutId = setTimeout(() => {
-      reject(new Error(`Request timeout after ${TEST_TIMEOUT}ms`));
-    }, TEST_TIMEOUT);
+      reject(new Error(`Request timeout after ${TEST_TIMEOUT_MS}ms`));
+    }, TEST_TIMEOUT_MS);
 
     const req = http.request(options, (res) => {
       let body = '';
-      res.on('data', (chunk) => {
-        body += chunk;
-      });
+      res.on('data', (chunk) => { body += chunk; });
       res.on('end', () => {
         clearTimeout(timeoutId);
-        resolve({
-          statusCode: res.statusCode,
-          headers: res.headers,
-          body: body
-        });
+        resolve({ statusCode: res.statusCode, headers: res.headers, body });
       });
     });
 
@@ -73,10 +48,10 @@ function makeRequest(options) {
 }
 
 /**
- * Records a test result
+ * Records a test result.
  * @param {string} name - Test name
  * @param {boolean} success - Whether test passed
- * @param {string} [message] - Optional message for failed tests
+ * @param {string} message - Optional failure message
  */
 function recordResult(name, success, message = '') {
   if (success) {
@@ -89,30 +64,23 @@ function recordResult(name, success, message = '') {
   testResults.push({ name, success, message });
 }
 
-// ============================================================================
-// Test Server Setup
-// ============================================================================
-
+// Test server instance
 let testServer = null;
 
 /**
- * Starts a test server on the test port
+ * Starts a test server on the test port.
  */
 function startTestServer() {
   return new Promise((resolve, reject) => {
-    // Clear the require cache to get a fresh server instance
     delete require.cache[require.resolve('./server.js')];
-    
-    // Create a new server for testing
+
     const httpModule = require('http');
     const { requestHandler } = require('./server.js');
-    
+
     testServer = httpModule.createServer(requestHandler);
-    
-    testServer.on('error', (err) => {
-      reject(err);
-    });
-    
+
+    testServer.on('error', reject);
+
     testServer.listen(TEST_PORT, TEST_HOSTNAME, () => {
       console.log(`[Server] Server running at http://${TEST_HOSTNAME}:${TEST_PORT}/`);
       resolve();
@@ -121,7 +89,7 @@ function startTestServer() {
 }
 
 /**
- * Stops the test server
+ * Stops the test server.
  */
 function stopTestServer() {
   return new Promise((resolve) => {
@@ -136,13 +104,8 @@ function stopTestServer() {
   });
 }
 
-// ============================================================================
 // Test Cases
-// ============================================================================
 
-/**
- * Test 1: GET / returns 200 OK with Hello World
- */
 async function testGetRoot() {
   try {
     const response = await makeRequest({
@@ -151,12 +114,12 @@ async function testGetRoot() {
       path: '/',
       method: 'GET'
     });
-    
-    const success = 
+
+    const success =
       response.statusCode === 200 &&
       response.body === 'Hello, World!\n' &&
       response.headers['content-type'] === 'text/plain';
-    
+
     recordResult(
       'GET / returns 200 OK with Hello World',
       success,
@@ -167,9 +130,6 @@ async function testGetRoot() {
   }
 }
 
-/**
- * Test 2: HEAD / returns 200 with no body
- */
 async function testHeadRoot() {
   try {
     const response = await makeRequest({
@@ -178,12 +138,12 @@ async function testHeadRoot() {
       path: '/',
       method: 'HEAD'
     });
-    
-    const success = 
+
+    const success =
       response.statusCode === 200 &&
       response.body === '' &&
       response.headers['content-type'] === 'text/plain';
-    
+
     recordResult(
       'HEAD / returns 200 with no body',
       success,
@@ -194,9 +154,6 @@ async function testHeadRoot() {
   }
 }
 
-/**
- * Test 3: OPTIONS / returns 204 with Allow header
- */
 async function testOptionsRoot() {
   try {
     const response = await makeRequest({
@@ -205,15 +162,15 @@ async function testOptionsRoot() {
       path: '/',
       method: 'OPTIONS'
     });
-    
+
     const allowHeader = response.headers['allow'];
-    const success = 
+    const success =
       response.statusCode === 204 &&
       allowHeader &&
       allowHeader.includes('GET') &&
       allowHeader.includes('HEAD') &&
       allowHeader.includes('OPTIONS');
-    
+
     recordResult(
       'OPTIONS / returns 204 with Allow header',
       success,
@@ -224,9 +181,6 @@ async function testOptionsRoot() {
   }
 }
 
-/**
- * Test 4: POST / returns 405 Method Not Allowed
- */
 async function testPostRejected() {
   try {
     const response = await makeRequest({
@@ -235,12 +189,12 @@ async function testPostRejected() {
       path: '/',
       method: 'POST'
     });
-    
-    const success = 
+
+    const success =
       response.statusCode === 405 &&
       response.headers['allow'] &&
       response.body.includes('Method Not Allowed');
-    
+
     recordResult(
       'POST / returns 405 Method Not Allowed',
       success,
@@ -251,9 +205,6 @@ async function testPostRejected() {
   }
 }
 
-/**
- * Test 5: PUT / returns 405 Method Not Allowed
- */
 async function testPutRejected() {
   try {
     const response = await makeRequest({
@@ -262,12 +213,12 @@ async function testPutRejected() {
       path: '/',
       method: 'PUT'
     });
-    
-    const success = 
+
+    const success =
       response.statusCode === 405 &&
       response.headers['allow'] &&
       response.body.includes('Method Not Allowed');
-    
+
     recordResult(
       'PUT / returns 405 Method Not Allowed',
       success,
@@ -278,9 +229,6 @@ async function testPutRejected() {
   }
 }
 
-/**
- * Test 6: DELETE / returns 405 Method Not Allowed
- */
 async function testDeleteRejected() {
   try {
     const response = await makeRequest({
@@ -289,12 +237,12 @@ async function testDeleteRejected() {
       path: '/',
       method: 'DELETE'
     });
-    
-    const success = 
+
+    const success =
       response.statusCode === 405 &&
       response.headers['allow'] &&
       response.body.includes('Method Not Allowed');
-    
+
     recordResult(
       'DELETE / returns 405 Method Not Allowed',
       success,
@@ -305,9 +253,6 @@ async function testDeleteRejected() {
   }
 }
 
-/**
- * Test 7: Path traversal with ".." returns 400 Bad Request
- */
 async function testPathTraversalRejected() {
   try {
     const response = await makeRequest({
@@ -316,11 +261,11 @@ async function testPathTraversalRejected() {
       path: '/../../../etc/passwd',
       method: 'GET'
     });
-    
-    const success = 
+
+    const success =
       response.statusCode === 400 &&
       response.body.includes('Bad Request');
-    
+
     recordResult(
       'Path traversal with ".." returns 400 Bad Request',
       success,
@@ -331,9 +276,6 @@ async function testPathTraversalRejected() {
   }
 }
 
-/**
- * Test 8: GET /anything returns 200 OK
- */
 async function testGetAnyPath() {
   try {
     const response = await makeRequest({
@@ -342,11 +284,11 @@ async function testGetAnyPath() {
       path: '/anything',
       method: 'GET'
     });
-    
-    const success = 
+
+    const success =
       response.statusCode === 200 &&
       response.body === 'Hello, World!\n';
-    
+
     recordResult(
       'GET /anything returns 200 OK',
       success,
@@ -357,14 +299,11 @@ async function testGetAnyPath() {
   }
 }
 
-/**
- * Test 9: Server handles concurrent requests
- */
 async function testConcurrentRequests() {
   try {
     const concurrentCount = 5;
     const promises = [];
-    
+
     for (let i = 0; i < concurrentCount; i++) {
       promises.push(makeRequest({
         hostname: TEST_HOSTNAME,
@@ -373,12 +312,12 @@ async function testConcurrentRequests() {
         method: 'GET'
       }));
     }
-    
+
     const responses = await Promise.all(promises);
     const allSuccessful = responses.every(
       (res) => res.statusCode === 200 && res.body === 'Hello, World!\n'
     );
-    
+
     recordResult(
       'Server handles concurrent requests',
       allSuccessful,
@@ -389,19 +328,15 @@ async function testConcurrentRequests() {
   }
 }
 
-// ============================================================================
 // Test Runner
-// ============================================================================
 
 async function runAllTests() {
   console.log('=== Starting Test Suite ===\n');
-  
+
   try {
-    // Setup: Start test server
     await startTestServer();
     console.log('[Setup] Server started successfully\n');
-    
-    // Run all tests
+
     await testGetRoot();
     await testHeadRoot();
     await testOptionsRoot();
@@ -411,22 +346,20 @@ async function runAllTests() {
     await testPathTraversalRejected();
     await testGetAnyPath();
     await testConcurrentRequests();
-    
+
   } catch (err) {
     console.error(`[Error] Test setup failed: ${err.message}`);
     failed++;
   } finally {
-    // Cleanup: Stop test server
     console.log('\n[Cleanup] Stopping server...');
     await stopTestServer();
   }
-  
-  // Print summary
+
   console.log('\n=== Test Results ===');
   console.log(`Passed: ${passed}`);
   console.log(`Failed: ${failed}`);
   console.log(`Total:  ${passed + failed}`);
-  
+
   if (failed === 0) {
     console.log('\n✓ All tests passed!');
     process.exit(0);
@@ -436,5 +369,4 @@ async function runAllTests() {
   }
 }
 
-// Run tests
 runAllTests();
