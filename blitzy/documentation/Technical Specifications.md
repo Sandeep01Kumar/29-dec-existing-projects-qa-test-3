@@ -4,802 +4,1033 @@
 
 ## 0.1 Intent Clarification
 
-### 0.1.1 Core Refactoring Objective
+### 0.1.1 Core Feature Objective
 
-Based on the prompt, the Blitzy platform understands that the refactoring objective is to **completely rewrite an existing Node.js HTTP server into a Python 3 Flask application** while maintaining exact functional parity with the original implementation. This is a **tech stack migration** transformation where every feature, functionality, and behavior from the Node.js implementation must be faithfully reproduced in Python Flask.
+Based on the prompt, the Blitzy platform understands that the new feature requirement involves enhancing the existing **hao-backprop-test** repository, which currently implements a minimal Flask HTTP server for Backprop integration validation.
+
+**Current System Context:**
 
 | Attribute | Value |
 |-----------|-------|
-| **Refactoring Type** | Tech Stack Migration (Node.js → Python 3 Flask) |
-| **Target Repository** | Same repository (in-place rewrite) |
-| **Behavior Preservation** | Full functional parity required |
-| **Source Framework** | Node.js native `http` module |
-| **Target Framework** | Python 3 Flask |
+| Project Name | hao-backprop-test |
+| Current Technology | Python Flask (migrated from Node.js) |
+| Primary Function | HTTP server responding with "Hello, World!\n" |
+| Binding Address | 127.0.0.1:3000 |
+| Purpose | Backprop integration testing |
 
-**Specific Refactoring Goals:**
+**Critical Observation:**
 
-- Replace Node.js `http` module implementation with Flask-based HTTP server
-- Migrate CommonJS JavaScript code to Python 3 syntax and conventions
-- Preserve identical HTTP response behavior (status code, content-type, body)
-- Maintain server startup logging functionality
-- Create equivalent Python dependency management infrastructure
-- Ensure the rewritten Flask application can serve as a drop-in replacement
+The user's input describes the existing codebase functionality but **does not specify what new feature should be added**. The provided context states:
+
+> "The main responsibility of this codebase is to spin up a basic HTTP server that responds with Hello, World! for any incoming request. It's a classic minimal Node.js server used to verify that the environment, dependencies, and Backprop integration work end-to-end."
 
 **Implicit Requirements Identified:**
 
-- Maintain API compatibility: Same endpoint behavior must be preserved
-- Preserve response format: "Hello, World!\n" with `text/plain` content type
-- Keep HTTP 200 status code for all requests
-- Implement equivalent console logging on server startup
-- Create proper Python project structure with `requirements.txt`
-- Follow Python and Flask best practices and conventions
+- Any new feature must maintain backward compatibility with existing Backprop integration testing
+- The "Hello, World!" response behavior on the root path must be preserved
+- The server must continue binding to 127.0.0.1:3000
+- The existing project warning ("Do not touch!") suggests caution when modifying this test artifact
+
+**Feature Addition Readiness Assessment:**
+
+| Readiness Dimension | Status | Notes |
+|---------------------|--------|-------|
+| Codebase Understanding | ✅ Complete | Full repository analysis performed |
+| Technology Stack | ✅ Documented | Flask 3.1.2, Python 3.12 |
+| Integration Points | ✅ Identified | Single-file architecture with clear entry point |
+| Specific Feature Requirements | ⚠️ MISSING | User must specify desired feature |
 
 ### 0.1.2 Special Instructions and Constraints
 
-**Critical User Directive:**
-> "keeping every feature and functionality exactly as in the original Node.js project"
-> "Ensure the rewritten version fully matches the behavior and logic of the current implementation"
+**Repository-Level Constraints:**
 
-**Preservation Requirements:**
+The README.md contains an explicit warning:
+> "Python Flask test project for backprop integration. Do not touch!"
 
-| Requirement | Original Behavior | Must Be Preserved |
-|-------------|-------------------|-------------------|
-| Response Body | `"Hello, World!\n"` | ✅ Exact string with newline |
-| HTTP Status | 200 OK | ✅ Must return 200 |
-| Content-Type | `text/plain` | ✅ Same MIME type |
-| Endpoint Behavior | All paths respond identically | ✅ Catch-all routing |
-| Startup Log | Server URL logged to console | ✅ Equivalent logging |
+This constraint indicates that the repository serves as a **protected test artifact** and any feature additions must:
+- Preserve existing test verification capabilities
+- Maintain the current behavioral parity with the original Node.js implementation
+- Not introduce complexity that could interfere with Backprop integration testing
+
+**Architectural Constraints:**
+
+| Constraint | Requirement |
+|------------|-------------|
+| Backward Compatibility | Existing `/` endpoint must return "Hello, World!\n" |
+| Port Preservation | Server must continue binding to port 3000 |
+| Content-Type Consistency | text/plain responses must remain available |
+| Single-File Preference | Current architecture uses single `app.py` |
 
 **Environment Variables Available:**
-- `DB_HOST` - Database host (available but not currently used by source)
-- `DB_HOST1` - Secondary database host (available but not currently used by source)
 
-**Note:** The original Node.js server does not use database connections, so these environment variables remain available for future use but are not required for this migration.
+| Variable | Status | Current Usage |
+|----------|--------|---------------|
+| `DB_HOST` | Set in environment | Not used by existing application |
+| `DB_HOST1` | Set in environment | Not used by existing application |
+
+These environment variables are available for potential database-related feature additions if required.
 
 ### 0.1.3 Technical Interpretation
 
-This refactoring translates to the following technical transformation strategy:
+Since no specific feature has been requested, this section documents the **technical foundation** available for feature addition:
 
-**Architecture Mapping:**
+**Available Extension Points:**
 
-```mermaid
-flowchart LR
-    subgraph Source["Node.js Implementation"]
-        A1[server.js]
-        A2[http module]
-        A3[package.json]
-        A4[package-lock.json]
-    end
-    
-    subgraph Target["Flask Implementation"]
-        B1[app.py]
-        B2[Flask framework]
-        B3[requirements.txt]
-        B4[.flaskenv]
-    end
-    
-    A1 -->|"Rewrite"| B1
-    A2 -->|"Replace with"| B2
-    A3 -->|"Transform to"| B3
-    A4 -->|"Handled by pip"| B3
+- **Route Addition**: Flask's decorator-based routing allows adding new endpoints alongside the existing catch-all route
+- **Service Layer**: New service modules can be created in the project root or a new `services/` directory
+- **Configuration**: Environment variables `DB_HOST` and `DB_HOST1` are available for database integration
+- **Middleware**: Flask supports middleware for cross-cutting concerns
+
+**Technical Transformation Pattern:**
+
+To implement a new feature in this codebase, the following approach would be used:
+
+| Action | Implementation Strategy |
+|--------|------------------------|
+| Add new endpoint | Create new route decorator in `app.py` or split into blueprints |
+| Add database support | Use `DB_HOST`/`DB_HOST1` environment variables with SQLAlchemy or similar |
+| Add new service | Create new Python module and import into `app.py` |
+| Extend response types | Add JSON/XML response handlers alongside text/plain |
+
+**Framework for Feature Addition:**
+
+```
+For [any new feature], we will:
+1. CREATE: New route handler(s) in app.py
+2. CREATE: Supporting service modules (if business logic required)
+3. MODIFY: requirements.txt (if new dependencies needed)
+4. CREATE: Test files for new functionality
+5. UPDATE: README.md with new feature documentation
+6. PRESERVE: Existing "Hello, World!" endpoint behavior
 ```
 
-**Transformation Rules:**
+**Awaiting Clarification:**
 
-| Source Concept | Target Implementation |
-|----------------|----------------------|
-| `require('http')` | `from flask import Flask` |
-| `http.createServer(callback)` | `Flask(__name__)` with `@app.route()` decorator |
-| `res.statusCode = 200` | Default Flask response (200) |
-| `res.setHeader('Content-Type', 'text/plain')` | `Response(..., mimetype='text/plain')` or return tuple |
-| `res.end('Hello, World!\n')` | `return 'Hello, World!\n'` |
-| `server.listen(port, hostname)` | `app.run(host=hostname, port=port)` |
-| `console.log()` | Built-in Flask startup message or custom logging |
-| `package.json` dependencies | `requirements.txt` with Flask |
+To proceed with a concrete implementation plan, the following information is needed:
+- Specific feature functionality requirements
+- Expected API endpoints and responses
+- Data storage requirements (if any)
+- Integration requirements with external services
+- UI/frontend requirements (if applicable)
 
-**Key Technology Decisions:**
+## 0.2 Repository Scope Discovery
 
-- **Flask Version:** 3.1.2 (latest stable, requires Python ≥3.9)
-- **Python Version:** 3.9+ (Flask 3.x requirement)
-- **Routing Strategy:** Catch-all route to match original behavior (all paths return same response)
-- **Response Handling:** Plain text response with explicit MIME type
+### 0.2.1 Comprehensive File Analysis
 
-## 0.2 Source Analysis
-
-### 0.2.1 Comprehensive Source File Discovery
+A systematic repository analysis was conducted to identify all files that may require modification or serve as integration points for new features.
 
 **Search Patterns Applied:**
 
-The following source files were identified through systematic repository analysis:
-
-| Pattern | Files Found | Relevance |
-|---------|-------------|-----------|
-| `*.js` | `server.js`, `server - Copy.js` | Primary application code |
-| `package*.json` | `package.json`, `package-lock.json` | Dependency management |
-| `*.md` | `README.md` | Documentation |
+| Pattern | Files Found | Purpose |
+|---------|-------------|---------|
+| `*.py` | `app.py` | Primary application code |
+| `*.txt` | `requirements.txt`, `test.py.txt`, `test.py - Copy.txt`, `test.txt.txt` | Dependencies and placeholders |
+| `*.md` | `README.md`, `blitzy/documentation/*.md` | Documentation |
+| `*.json` | `package.json`, `package-lock.json` | Legacy Node.js (empty/non-functional) |
+| `*.js` | `server.js`, `server - Copy.js` | Legacy Node.js (empty placeholders) |
+| `*.java` | `LoginTest.java`, `LoginTest - Copy.java` | Non-functional stubs |
 | `*.csv` | `industry.csv`, `industry - Copy.csv` | Static data files |
-| `*.java` | `LoginTest.java`, `LoginTest - Copy.java` | Non-functional test stubs |
-| `*.txt` | `test.py.txt`, `test.py - Copy.txt`, `test.txt.txt` | Empty placeholder files |
 
-### 0.2.2 Current Structure Mapping
+**Complete Repository Structure:**
 
 ```
-Current Repository Structure:
 /
-├── server.js                 (15 lines - Main HTTP server - TO BE REPLACED)
-├── server - Copy.js          (15 lines - Duplicate of server.js - TO BE REMOVED)
-├── package.json              (11 lines - npm metadata - TO BE REPLACED)
-├── package-lock.json         (13 lines - npm lockfile - TO BE REMOVED)
-├── README.md                 (2 lines - Project documentation - TO BE UPDATED)
-├── industry.csv              (45 lines - Static data file - UNCHANGED)
-├── industry - Copy.csv       (45 lines - Duplicate data file - OUT OF SCOPE)
-├── LoginTest.java            (Non-functional Java stub - OUT OF SCOPE)
-├── LoginTest - Copy.java     (Duplicate Java stub - OUT OF SCOPE)
-├── test.py.txt               (Empty placeholder - OUT OF SCOPE)
-├── test.py - Copy.txt        (Empty placeholder - OUT OF SCOPE)
-└── test.txt.txt              (Empty placeholder - OUT OF SCOPE)
+├── app.py                          [ACTIVE - Flask application entry point]
+├── requirements.txt                [ACTIVE - Python dependencies: Flask>=3.1.0]
+├── README.md                       [ACTIVE - Project documentation]
+├── package.json                    [EMPTY - Legacy Node.js placeholder]
+├── package-lock.json               [EMPTY - Legacy npm lockfile]
+├── server.js                       [EMPTY - Legacy Node.js placeholder]
+├── server - Copy.js                [EMPTY - Duplicate placeholder]
+├── LoginTest.java                  [NON-FUNCTIONAL - Java stub with syntax errors]
+├── LoginTest - Copy.java           [NON-FUNCTIONAL - Duplicate Java stub]
+├── industry.csv                    [STATIC DATA - Industry category vocabulary]
+├── industry - Copy.csv             [STATIC DATA - Duplicate of above]
+├── test.py.txt                     [EMPTY - Zero-byte placeholder]
+├── test.py - Copy.txt              [EMPTY - Zero-byte placeholder]
+├── test.txt.txt                    [EMPTY - Zero-byte placeholder]
+└── blitzy/
+    └── documentation/
+        ├── Project Guide.md        [DOCUMENTATION - Migration runbook]
+        └── Technical Specifications.md [DOCUMENTATION - Technical spec]
 ```
 
-### 0.2.3 Source File Analysis
+### 0.2.2 Files Available for Modification
 
-**Primary Source: server.js**
+**Primary Application Files:**
 
-```javascript
-const http = require('http');
-const hostname = '127.0.0.1';
-const port = 3000;
-```
+| File | Lines | Purpose | Modification Potential |
+|------|-------|---------|----------------------|
+| `app.py` | 61 | Flask HTTP server with catch-all routing | HIGH - Main integration point for new features |
+| `requirements.txt` | 1 | Python dependency manifest | HIGH - Will need updates for new dependencies |
+| `README.md` | 31 | Project setup and run instructions | MEDIUM - Update with new feature documentation |
 
-| Component | Value | Migration Action |
-|-----------|-------|------------------|
-| HTTP Module | Node.js built-in `http` | Replace with Flask |
-| Hostname | `127.0.0.1` (localhost) | Preserve in Flask config |
-| Port | `3000` | Preserve in Flask config |
+**app.py Current Implementation Summary:**
 
-**Server Behavior Analysis:**
-
-| Feature | Implementation | Flask Equivalent |
-|---------|----------------|------------------|
-| Server Creation | `http.createServer(callback)` | `Flask(__name__)` |
-| Request Handler | Arrow function `(req, res) => {...}` | Route decorator `@app.route()` |
-| Status Code | `res.statusCode = 200` | Default or explicit in Response |
-| Content-Type | `res.setHeader('Content-Type', 'text/plain')` | `mimetype='text/plain'` |
-| Response Body | `res.end('Hello, World!\n')` | `return 'Hello, World!\n'` |
-| Server Start | `server.listen(port, hostname, callback)` | `app.run(host, port)` |
-| Startup Log | `console.log(...)` | Flask built-in or `print()` |
-
-**Secondary Source: package.json**
-
-| Field | Value | Migration Status |
-|-------|-------|------------------|
-| `name` | `hello_world` | Informational only |
-| `version` | `1.0.0` | Informational only |
-| `description` | "Hello world in Node.js" | Update in README |
-| `main` | `index.js` (incorrect) | Not applicable to Python |
-| `scripts.test` | Placeholder error exit | Create pytest setup |
-| `author` | `hxu` | Preserve attribution |
-| `license` | `MIT` | Preserve license |
-| `dependencies` | None (uses built-in http) | Map to requirements.txt |
-
-**Tertiary Source: README.md**
-
-```
-# hao-backprop-test
-test project for backprop integration. Do not touch!
-```
-
-| Element | Migration Action |
-|---------|------------------|
-| Project Name | Update to reflect Flask migration |
-| Description | Update to describe Python Flask implementation |
-| Warning | Preserve "Do not touch!" instruction |
-
-### 0.2.4 Complete Source File Inventory
-
-**Files Requiring Transformation:**
-
-| Source File | Lines | Purpose | Migration Priority |
-|-------------|-------|---------|-------------------|
-| `server.js` | 15 | HTTP server implementation | HIGH - Core transformation |
-| `package.json` | 11 | npm package metadata | HIGH - Replace with requirements.txt |
-| `package-lock.json` | 13 | Dependency lock | HIGH - Remove (not needed) |
-| `README.md` | 2 | Project documentation | MEDIUM - Update content |
-
-**Files Unchanged (Data Assets):**
-
-| File | Lines | Status |
-|------|-------|--------|
-| `industry.csv` | 45 | UNCHANGED - Static data |
-
-**Files Out of Scope:**
-
-| File | Reason |
-|------|--------|
-| `server - Copy.js` | Duplicate, not part of active implementation |
-| `industry - Copy.csv` | Duplicate data file |
-| `LoginTest.java` | Non-functional Java stub |
-| `LoginTest - Copy.java` | Duplicate Java stub |
-| `test.py.txt` | Empty placeholder |
-| `test.py - Copy.txt` | Empty placeholder |
-| `test.txt.txt` | Empty placeholder |
-
-## 0.3 Target Design
-
-### 0.3.1 Refactored Structure Planning
-
-**Target Architecture:**
-
-```
-Target Repository Structure:
-/
-├── app.py                    (NEW - Flask application entry point)
-├── requirements.txt          (NEW - Python dependencies)
-├── README.md                 (UPDATE - Documentation with Flask instructions)
-├── industry.csv              (UNCHANGED - Static data file)
-├── industry - Copy.csv       (OUT OF SCOPE - Unchanged)
-├── LoginTest.java            (OUT OF SCOPE - Unchanged)
-├── LoginTest - Copy.java     (OUT OF SCOPE - Unchanged)
-├── test.py.txt               (OUT OF SCOPE - Unchanged)
-├── test.py - Copy.txt        (OUT OF SCOPE - Unchanged)
-└── test.txt.txt              (OUT OF SCOPE - Unchanged)
-```
-
-**Files to Create:**
-
-| File | Purpose | Content Overview |
-|------|---------|------------------|
-| `app.py` | Main Flask application | Flask app with catch-all route returning "Hello, World!\n" |
-| `requirements.txt` | Python dependencies | Flask>=3.1.0 specification |
-
-**Files to Remove:**
-
-| File | Reason |
-|------|--------|
-| `server.js` | Replaced by `app.py` |
-| `server - Copy.js` | Duplicate, no longer needed |
-| `package.json` | Node.js metadata, replaced by `requirements.txt` |
-| `package-lock.json` | npm lockfile, no longer needed |
-
-**Files to Update:**
-
-| File | Changes |
-|------|---------|
-| `README.md` | Update description to reflect Flask implementation |
-
-### 0.3.2 Web Search Research Conducted
-
-**Research Findings:**
-
-| Topic | Key Insight | Source |
-|-------|-------------|--------|
-| Flask Latest Version | Flask 3.1.2 (released Aug 19, 2025) | PyPI |
-| Python Requirement | Python >=3.9 required for Flask 3.x | Flask Documentation |
-| Migration Approach | Map routes from Node.js to Flask decorators | Best Practices Guide |
-| File Naming | `app.py` is Flask convention for main entry | Flask for Node Developers |
-| Dependencies | Flask is the only required package | PyPI Flask |
-
-**Best Practices Applied:**
-
-- Use `app.py` as the main entry point (Flask convention)
-- Create `requirements.txt` for pip dependency management
-- Use `@app.route()` decorators for routing
-- Return plain strings or Response objects from view functions
-- Use `app.run()` with explicit host and port parameters
-
-### 0.3.3 Design Pattern Applications
-
-**Pattern Mapping:**
-
-| Node.js Pattern | Flask Equivalent |
-|-----------------|------------------|
-| Callback-based request handler | Decorator-based route handlers |
-| CommonJS module import | Python import statements |
-| Single event loop | WSGI synchronous model |
-| Built-in http module | Flask/Werkzeug HTTP handling |
-
-**Flask Application Architecture:**
-
-```mermaid
-flowchart TB
-    subgraph FlaskApp["Flask Application (app.py)"]
-        A[Flask Instance Creation]
-        B[Route Definition]
-        C[View Function]
-        D[Application Runner]
-    end
-    
-    subgraph Request["HTTP Request Flow"]
-        R1[Client Request] --> B
-        B --> C
-        C --> R2[HTTP Response]
-    end
-    
-    A --> B
-    B --> C
-    C --> D
-```
-
-### 0.3.4 Target File Specifications
-
-**app.py - Flask Application Entry Point:**
-
-| Specification | Value |
-|---------------|-------|
-| Flask Import | `from flask import Flask` |
+| Component | Implementation |
+|-----------|----------------|
+| Imports | `from flask import Flask, Response` |
+| Constants | `HOST = '127.0.0.1'`, `PORT = 3000` |
 | App Instance | `app = Flask(__name__)` |
-| Route | Catch-all route `@app.route('/', defaults={'path': ''})` and `@app.route('/<path:path>')` |
-| Response | `'Hello, World!\n'` with `text/plain` mimetype |
-| Host | `127.0.0.1` |
-| Port | `3000` |
-| Main Guard | `if __name__ == '__main__':` |
+| Route Handlers | Catch-all route at `/` and `/<path:path>` |
+| Response | `Response('Hello, World!\n', mimetype='text/plain')` |
+| Entry Point | `app.run(host=HOST, port=PORT)` |
 
-**requirements.txt - Dependency Specification:**
+### 0.2.3 Integration Point Discovery
 
-| Package | Version Constraint | Reason |
-|---------|-------------------|--------|
-| Flask | `>=3.1.0` | Latest stable micro framework |
+**Current Integration Points in app.py:**
 
-### 0.3.5 Behavioral Equivalence Verification
+| Location | Line(s) | Integration Type | Purpose |
+|----------|---------|------------------|---------|
+| Import section | 19 | Module imports | Add new Flask extensions or custom modules |
+| After constants | 22-23 | Configuration | Add feature-specific settings |
+| Route decorators | 29-30 | Route registration | Add new endpoint handlers |
+| After `hello()` function | 52+ | New handlers | Define additional route handlers |
+| Before `app.run()` | 55-60 | Initialization | Add startup logic or middleware |
 
-**Feature Parity Matrix:**
+**Potential New Route Patterns:**
 
-| Feature | Node.js Implementation | Flask Implementation | Parity |
-|---------|----------------------|----------------------|--------|
-| HTTP Server | `http.createServer()` | `Flask().run()` | ✅ |
-| Default Route | Handles all paths | Catch-all route decorator | ✅ |
-| Response Body | `'Hello, World!\n'` | `'Hello, World!\n'` | ✅ |
-| Status Code | 200 | 200 (Flask default) | ✅ |
-| Content-Type | `text/plain` | `text/plain` (explicit) | ✅ |
-| Host Binding | `127.0.0.1` | `127.0.0.1` | ✅ |
-| Port | `3000` | `3000` | ✅ |
-| Startup Log | `console.log()` | Flask built-in output | ✅ |
+| Route Pattern | Purpose |
+|---------------|---------|
+| `/api/*` | RESTful API endpoints |
+| `/health` | Health check endpoint |
+| `/metrics` | Observability endpoint |
+| `/admin/*` | Administrative functions |
 
-## 0.4 Transformation Mapping
+### 0.2.4 New File Requirements Template
 
-### 0.4.1 File-by-File Transformation Plan
+When a specific feature is defined, the following new files may need to be created:
 
-**Comprehensive Transformation Table:**
+**New Source Files Template:**
 
-| Target File | Transformation | Source File | Key Changes |
-|------------|---------------|-------------|-------------|
-| `app.py` | CREATE | `server.js` | Create Flask application with equivalent HTTP server functionality, catch-all routing, and identical response behavior |
-| `requirements.txt` | CREATE | `package.json` | Create Python dependency file specifying Flask>=3.1.0 |
-| `README.md` | UPDATE | `README.md` | Update documentation to reflect Flask implementation with Python setup instructions |
-| `server.js` | DELETE | N/A | Remove Node.js server file after Flask replacement is complete |
-| `server - Copy.js` | DELETE | N/A | Remove duplicate Node.js server file |
-| `package.json` | DELETE | N/A | Remove npm package metadata (replaced by requirements.txt) |
-| `package-lock.json` | DELETE | N/A | Remove npm lockfile (not needed for Python project) |
+| File Path | Purpose |
+|-----------|---------|
+| `src/[feature_name]/core.py` | Main feature logic implementation |
+| `src/[feature_name]/models.py` | Data models for feature |
+| `src/[feature_name]/routes.py` | Feature-specific route handlers |
+| `config/[feature]_settings.py` | Feature configuration |
 
-### 0.4.2 Detailed Transformation Specifications
+**New Test Files Template:**
 
-**CREATE: app.py from server.js**
+| File Path | Purpose |
+|-----------|---------|
+| `tests/unit/test_[feature].py` | Unit test coverage |
+| `tests/integration/test_[feature]_integration.py` | Integration test scenarios |
 
-| Source Element (server.js) | Target Element (app.py) | Transformation |
-|---------------------------|------------------------|----------------|
-| `const http = require('http');` | `from flask import Flask, Response` | Module import transformation |
-| `const hostname = '127.0.0.1';` | `HOST = '127.0.0.1'` | Constant declaration |
-| `const port = 3000;` | `PORT = 3000` | Constant declaration |
-| `http.createServer((req, res) => {...})` | `@app.route()` + view function | Server/route creation |
-| `res.statusCode = 200;` | Default Flask response (200) | Status code handling |
-| `res.setHeader('Content-Type', 'text/plain');` | `mimetype='text/plain'` in Response | Header setting |
-| `res.end('Hello, World!\n');` | `return Response('Hello, World!\n', mimetype='text/plain')` | Response body |
-| `server.listen(port, hostname, () => {...})` | `app.run(host=HOST, port=PORT)` | Server startup |
-| `console.log(\`Server running...\`)` | Flask built-in startup message | Startup logging |
+**Alternative: Single-File Enhancement:**
 
-**CREATE: requirements.txt from package.json**
+Given the current minimal architecture, new features could also be added directly to `app.py`:
 
-| package.json Field | requirements.txt Entry | Notes |
-|--------------------|----------------------|-------|
-| No `dependencies` defined | `Flask>=3.1.0` | Node.js used built-in http; Flask is external |
-| `"name": "hello_world"` | N/A | Project name not in requirements |
-| `"version": "1.0.0"` | N/A | Version not in requirements |
-
-**UPDATE: README.md**
-
-| Current Content | Updated Content |
-|----------------|-----------------|
-| `# hao-backprop-test` | `# hao-backprop-test` (unchanged) |
-| `test project for backprop integration. Do not touch!` | `Python Flask test project for backprop integration. Do not touch!` |
-
-### 0.4.3 Code Transformation Examples
-
-**Source server.js Implementation:**
-```javascript
-const http = require('http');
-const hostname = '127.0.0.1';
-```
-
-**Target app.py Implementation:**
 ```python
-from flask import Flask, Response
-HOST = '127.0.0.1'
+# Add after line 52 in app.py
+
+@app.route('/new_feature')
+def new_feature_handler():
+    return Response('...', mimetype='...')
 ```
 
-**Route Handler Transformation:**
+### 0.2.5 Data Files Analysis
 
-| Node.js Callback | Flask View Function |
-|------------------|---------------------|
-| `(req, res) => { res.end('Hello, World!\n') }` | `def hello(): return Response(...)` |
+**Available Data Resources:**
 
-### 0.4.4 Cross-File Dependencies
+| File | Content | Potential Use |
+|------|---------|---------------|
+| `industry.csv` | 44 industry category labels | Reference data for industry classification features |
 
-**Import Statement Transformations:**
+The `industry.csv` file contains a curated taxonomy:
 
-There are no cross-file import dependencies in this project since it consists of a single application file. The only imports required are from external packages:
+| Column | Type | Sample Values |
+|--------|------|---------------|
+| Industry | String | Accounting/Finance, Agriculture, Banking, etc. |
 
-| Source Import | Target Import |
-|--------------|---------------|
-| `require('http')` (Node.js built-in) | `from flask import Flask, Response` (pip package) |
+This data file could support features requiring industry categorization or classification.
 
-### 0.4.5 File Operation Summary
+### 0.2.6 Documentation Files
 
-**One-Phase Execution Plan:**
+**Documentation Location:** `blitzy/documentation/`
 
-All file transformations will be executed in a single phase:
+| File | Purpose | Status |
+|------|---------|--------|
+| `Project Guide.md` | Migration runbook and validation evidence | REFERENCE |
+| `Technical Specifications.md` | Detailed technical specification | REFERENCE |
 
-| Operation | Files | Count |
-|-----------|-------|-------|
-| CREATE | `app.py`, `requirements.txt` | 2 |
-| UPDATE | `README.md` | 1 |
-| DELETE | `server.js`, `server - Copy.js`, `package.json`, `package-lock.json` | 4 |
-| UNCHANGED | `industry.csv`, `industry - Copy.csv`, `LoginTest.java`, `LoginTest - Copy.java`, `test.py.txt`, `test.py - Copy.txt`, `test.txt.txt` | 7 |
+These files provide extensive context on the Node.js to Flask migration and behavioral parity requirements that must be maintained when adding new features.
 
-**Total Files Affected:** 7 (2 created + 1 updated + 4 deleted)
+## 0.3 Dependency Inventory
 
-### 0.4.6 Execution Order
+### 0.3.1 Current Dependency Manifest
 
-The transformation must follow this order to maintain project integrity:
-
-```mermaid
-flowchart TD
-    A[Create requirements.txt] --> B[Create app.py]
-    B --> C[Update README.md]
-    C --> D[Delete Node.js files]
-    
-    subgraph Delete["Delete Phase"]
-        D --> D1[Delete server.js]
-        D --> D2[Delete server - Copy.js]
-        D --> D3[Delete package.json]
-        D --> D4[Delete package-lock.json]
-    end
-```
-
-| Step | Action | Rationale |
-|------|--------|-----------|
-| 1 | Create `requirements.txt` | Define Python dependencies first |
-| 2 | Create `app.py` | Create replacement server implementation |
-| 3 | Update `README.md` | Update documentation |
-| 4 | Delete Node.js files | Remove obsolete files only after replacements are verified |
-
-## 0.5 Dependency Inventory
-
-### 0.5.1 Key Private and Public Packages
-
-**Source Dependencies (Node.js - Current):**
-
-| Registry | Package | Version | Purpose | Status |
-|----------|---------|---------|---------|--------|
-| Built-in | `http` | Node.js bundled | HTTP server functionality | To be replaced |
-
-**Note:** The original Node.js implementation uses only the built-in `http` module with zero external npm dependencies (confirmed via `package-lock.json` analysis showing empty dependency tree).
-
-**Target Dependencies (Python Flask - New):**
-
-| Registry | Package | Version | Purpose | Required |
-|----------|---------|---------|---------|----------|
-| PyPI | Flask | >=3.1.0 | Micro web framework for HTTP server | YES |
-
-**Flask Transitive Dependencies (Automatically Installed):**
-
-| Package | Version Requirement | Purpose |
-|---------|---------------------|---------|
-| Werkzeug | >=3.1 | WSGI utilities and HTTP handling |
-| Jinja2 | >3.1.2 | Template engine (not used but required by Flask) |
-| itsdangerous | >=2.2 | Cryptographic signing |
-| click | >=8.1.3 | Command-line interface |
-| blinker | >=1.9 | Signal support |
-| MarkupSafe | (Jinja2 dependency) | Safe string handling |
-
-### 0.5.2 Dependency Updates
-
-**Import Refactoring:**
-
-Since this is a complete tech stack migration rather than an internal refactoring, import changes involve replacing the entire module system:
-
-| File Pattern | Original Import | New Import | Action |
-|--------------|-----------------|------------|--------|
-| `server.js` → `app.py` | `require('http')` | `from flask import Flask, Response` | Complete replacement |
-
-**No internal import updates required** - The project consists of a single source file with no internal module dependencies.
-
-### 0.5.3 External Reference Updates
-
-**Configuration File Changes:**
-
-| File Type | Pattern | Change Required |
-|-----------|---------|-----------------|
-| Package metadata | `package.json` | DELETE (replaced by `requirements.txt`) |
-| Lock file | `package-lock.json` | DELETE (pip handles dependency resolution) |
-| Python requirements | `requirements.txt` | CREATE |
-
-**Build and Runtime Files:**
-
-| Current (Node.js) | Target (Python) | Notes |
-|-------------------|-----------------|-------|
-| `package.json` | `requirements.txt` | Different dependency management paradigm |
-| `node_modules/` | Virtual environment | Python uses venv/virtualenv |
-| `npm install` | `pip install -r requirements.txt` | Installation command |
-| `node server.js` | `python app.py` or `flask run` | Execution command |
-
-### 0.5.4 Runtime Environment Requirements
-
-**Python Runtime:**
-
-| Requirement | Specification | Rationale |
-|-------------|---------------|-----------|
-| Python Version | >=3.9 | Flask 3.x minimum requirement |
-| Recommended Version | 3.11 or 3.12 | Latest stable with best performance |
-| Package Manager | pip | Standard Python package installer |
-| Virtual Environment | venv or virtualenv | Isolated dependency management |
-
-**Development Environment Setup:**
-
-```bash
-# Create virtual environment
-python3 -m venv venv
-
-#### Activate virtual environment
-source venv/bin/activate  # Linux/Mac
-
-#### Install dependencies
-pip install -r requirements.txt
-```
-
-### 0.5.5 Dependency Manifest Content
-
-**requirements.txt Specification:**
+**requirements.txt Content:**
 
 ```
 Flask>=3.1.0
 ```
 
-| Entry | Explanation |
-|-------|-------------|
-| `Flask>=3.1.0` | Minimum Flask 3.1.0 for latest features and Python 3.9+ support |
+**Installed Package Versions (verified via pip freeze):**
 
-**Version Justification:**
+| Registry | Package | Version | Purpose |
+|----------|---------|---------|---------|
+| PyPI | Flask | 3.1.2 | Core web framework for HTTP server |
+| PyPI | Werkzeug | 3.1.5 | WSGI utilities and HTTP handling (Flask dependency) |
+| PyPI | Jinja2 | 3.1.6 | Template engine (Flask dependency, not actively used) |
+| PyPI | itsdangerous | 2.2.0 | Cryptographic signing (Flask dependency) |
+| PyPI | click | 8.3.1 | CLI utilities (Flask dependency) |
+| PyPI | blinker | 1.9.0 | Signal support (Flask dependency) |
+| PyPI | MarkupSafe | 3.0.3 | Safe string handling (Jinja2 dependency) |
 
-| Consideration | Decision |
-|---------------|----------|
-| Flask 3.1.2 is latest | Use `>=3.1.0` to allow patch updates |
-| Python 3.9+ requirement | Compatible with modern Python installations |
-| No upper bound | Allow future Flask 3.x updates |
+### 0.3.2 Runtime Environment Requirements
 
-### 0.5.6 Environment Variables
+**Python Runtime:**
+
+| Requirement | Installed | Required | Status |
+|-------------|-----------|----------|--------|
+| Python Version | 3.12.3 | ≥3.9 | ✅ Compatible |
+| pip Version | 25.3 | Any recent | ✅ Compatible |
+| Virtual Environment | venv | Recommended | ✅ Available |
+
+**Environment Setup Commands:**
+
+```bash
+# Create virtual environment
+
+python3 -m venv venv
+
+#### Activate (Linux/macOS)
+
+source venv/bin/activate
+
+#### Install dependencies
+
+pip install -r requirements.txt
+```
+
+### 0.3.3 Dependency Update Considerations
+
+When adding a new feature, the following dependency patterns may be required:
+
+**Common Feature Dependencies:**
+
+| Feature Type | Potential Dependencies | Version |
+|--------------|----------------------|---------|
+| Database Integration | SQLAlchemy, Flask-SQLAlchemy | ≥2.0.0 |
+| REST API Enhancement | Flask-RESTful, marshmallow | ≥0.3.10 |
+| Authentication | Flask-Login, Flask-JWT-Extended | ≥0.6.0 |
+| Form Handling | Flask-WTF, WTForms | ≥1.2.0 |
+| Testing | pytest, pytest-flask | ≥8.0.0 |
+| CORS Support | Flask-CORS | ≥4.0.0 |
+
+**requirements.txt Update Template:**
+
+```
+Flask>=3.1.0
+# Add new dependencies below based on feature requirements
+
+#### [dependency_name]>=[version]
+```
+
+### 0.3.4 Import Update Patterns
+
+**Current Imports in app.py:**
+
+```python
+from flask import Flask, Response
+```
+
+**Common Import Expansions:**
+
+| Feature Addition | Import Modification |
+|------------------|---------------------|
+| JSON Responses | `from flask import Flask, Response, jsonify` |
+| Request Handling | `from flask import Flask, Response, request` |
+| Blueprints | `from flask import Flask, Response, Blueprint` |
+| Templates | `from flask import Flask, Response, render_template` |
+
+### 0.3.5 External Reference Updates
+
+**Files Requiring Updates When Dependencies Change:**
+
+| File Pattern | Update Required |
+|--------------|-----------------|
+| `requirements.txt` | Add new package specifications |
+| `app.py` | Add new import statements |
+| `README.md` | Update setup instructions if needed |
+
+**No Updates Required For:**
+
+| File | Reason |
+|------|--------|
+| `package.json` | Empty placeholder (not used) |
+| `package-lock.json` | Empty placeholder (not used) |
+| `*.java` files | Out of scope |
+
+### 0.3.6 Environment Variables
 
 **Available Environment Variables:**
 
-| Variable | Status | Usage in Migration |
-|----------|--------|-------------------|
-| `DB_HOST` | Available | Not used (no database in original) |
-| `DB_HOST1` | Available | Not used (no database in original) |
+| Variable | Value Status | Potential Usage |
+|----------|--------------|-----------------|
+| `DB_HOST` | Set in environment | Database connection host for data persistence features |
+| `DB_HOST1` | Set in environment | Secondary/replica database host |
 
-**Note:** These environment variables are available in the execution environment but are not utilized by either the original Node.js server or the Flask migration, as the application is a simple stateless HTTP server with no database connectivity.
+**Environment Variable Access Pattern:**
+
+```python
+import os
+db_host = os.environ.get('DB_HOST', 'localhost')
+```
+
+**Note:** These variables are currently unused by the application but available for feature additions requiring database connectivity.
+
+## 0.4 Integration Analysis
+
+### 0.4.1 Existing Code Touchpoints
+
+**Primary Integration Point: app.py**
+
+The single-file architecture provides clear touchpoints for feature integration:
+
+| Location | Line Range | Touchpoint Type | Integration Action |
+|----------|------------|-----------------|-------------------|
+| Import Block | Lines 19 | Module imports | Add new Flask extensions or custom modules |
+| Constants Block | Lines 21-23 | Configuration | Add feature-specific constants |
+| Route Decorators | Lines 29-30 | Route registration | Add new route patterns |
+| View Function | Lines 31-52 | Request handlers | Create new handler functions |
+| Main Guard | Lines 55-60 | Startup logic | Add initialization code |
+
+**Direct Modification Points:**
+
+| Modification Area | Purpose | Current Content |
+|-------------------|---------|-----------------|
+| `app.py` Line 19 | Import additions | `from flask import Flask, Response` |
+| `app.py` Line 26 | After app creation | `app = Flask(__name__)` |
+| `app.py` Line 52 | After hello() function | Route handler ends |
+| `app.py` Line 55 | Before app.run() | Main guard section |
+
+### 0.4.2 Route Handler Architecture
+
+**Current Catch-All Route Pattern:**
+
+```python
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def hello(path):
+    return Response('Hello, World!\n', mimetype='text/plain')
+```
+
+**Integration Considerations:**
+
+| Aspect | Current Behavior | New Feature Impact |
+|--------|------------------|-------------------|
+| Route Priority | Catch-all captures everything | New specific routes must be defined BEFORE catch-all |
+| Path Handling | All paths return same response | New routes need specific path patterns |
+| HTTP Methods | Implicit GET only | New routes may need POST, PUT, DELETE |
+
+**Recommended Route Integration Order:**
+
+```python
+# 1. Specific routes first
+
+@app.route('/api/feature')
+def feature_endpoint():
+    # New feature logic
+    pass
+
+#### Catch-all route last (existing)
+
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def hello(path):
+    return Response('Hello, World!\n', mimetype='text/plain')
+```
+
+### 0.4.3 Service Layer Integration
+
+**Current State:** No dedicated service layer exists.
+
+**Recommended Pattern for Feature Addition:**
+
+| Layer | Purpose | Implementation |
+|-------|---------|----------------|
+| Routes | HTTP endpoint handling | `app.py` or Flask Blueprint |
+| Services | Business logic | New `services/` directory |
+| Models | Data structures | New `models/` directory |
+| Config | Settings management | New `config.py` or environment variables |
+
+**Service Integration Example:**
+
+```python
+# services/feature_service.py
+
+class FeatureService:
+    def process(self, data):
+        # Business logic here
+        pass
+```
+
+### 0.4.4 Configuration Integration
+
+**Current Configuration:**
+
+| Config Item | Location | Value |
+|-------------|----------|-------|
+| HOST | `app.py` constant | `'127.0.0.1'` |
+| PORT | `app.py` constant | `3000` |
+| Flask config | Default | Flask development defaults |
+
+**Environment Variables Available:**
+
+| Variable | Integration Pattern |
+|----------|-------------------|
+| `DB_HOST` | `os.environ.get('DB_HOST')` |
+| `DB_HOST1` | `os.environ.get('DB_HOST1')` |
+
+**Configuration Extension Pattern:**
+
+```python
+# Add to app.py or new config.py
+
+app.config.update(
+    FEATURE_ENABLED=True,
+    FEATURE_SETTING='value'
+)
+```
+
+### 0.4.5 External System Integration Points
+
+**Potential Integration Categories:**
+
+| Integration Type | Available Hook | Notes |
+|------------------|----------------|-------|
+| Database | `DB_HOST`, `DB_HOST1` env vars | Environment variables pre-configured |
+| External APIs | HTTP client in route handlers | Requires additional dependencies |
+| Message Queues | N/A | Would require new infrastructure |
+| Authentication | N/A | Would require new dependency (Flask-Login, etc.) |
+
+**Database Integration Template:**
+
+```python
+import os
+from flask_sqlalchemy import SQLAlchemy
+
+app.config['SQLALCHEMY_DATABASE_URI'] = (
+    f"postgresql://{os.environ.get('DB_HOST')}/dbname"
+)
+db = SQLAlchemy(app)
+```
+
+### 0.4.6 Testing Integration
+
+**Current Testing Infrastructure:** None implemented.
+
+**Recommended Testing Integration:**
+
+| Test Type | Location | Framework |
+|-----------|----------|-----------|
+| Unit Tests | `tests/unit/` | pytest |
+| Integration Tests | `tests/integration/` | pytest-flask |
+| API Tests | `tests/api/` | pytest + requests |
+
+**Test File Pattern:**
+
+```python
+# tests/test_app.py
+
+import pytest
+from app import app
+
+@pytest.fixture
+def client():
+    with app.test_client() as client:
+        yield client
+
+def test_hello_world(client):
+    response = client.get('/')
+    assert response.status_code == 200
+    assert response.data == b'Hello, World!\n'
+```
+
+### 0.4.7 Backprop Integration Preservation
+
+**Critical Requirement:**
+
+The existing Backprop integration test functionality must be preserved. Any new feature additions must:
+
+| Requirement | Action |
+|-------------|--------|
+| Maintain `/` endpoint | Keep catch-all route functional |
+| Preserve response format | "Hello, World!\n" with text/plain |
+| Keep port binding | Continue using port 3000 |
+| Ensure backward compatibility | New features additive, not replacing |
+
+## 0.5 Technical Implementation
+
+### 0.5.1 Implementation Framework
+
+Since no specific feature has been requested, this section provides the **implementation framework** for adding features to the hao-backprop-test repository.
+
+**Implementation Approach:**
+
+| Phase | Action | Deliverables |
+|-------|--------|--------------|
+| Foundation | Establish feature structure | New modules, routes, configs |
+| Integration | Connect with existing systems | Modified app.py, updated imports |
+| Quality | Implement comprehensive tests | Test files, coverage reports |
+| Documentation | Document usage and configuration | Updated README.md, API docs |
+
+### 0.5.2 File-by-File Execution Template
+
+**Group 1 - Core Feature Files (CREATE):**
+
+| File | Purpose | Implementation Notes |
+|------|---------|---------------------|
+| `app.py` | MODIFY - Add new route handlers | Insert before catch-all route |
+| `services/[feature]_service.py` | CREATE - Business logic | New service module |
+| `models/[feature]_model.py` | CREATE - Data structures | If data persistence needed |
+
+**Group 2 - Supporting Infrastructure (MODIFY/CREATE):**
+
+| File | Purpose | Implementation Notes |
+|------|---------|---------------------|
+| `requirements.txt` | MODIFY - Add dependencies | Append new package requirements |
+| `config.py` | CREATE - Centralized config | Optional, for complex features |
+| `.env.example` | CREATE - Environment template | Document required variables |
+
+**Group 3 - Tests and Documentation (CREATE/MODIFY):**
+
+| File | Purpose | Implementation Notes |
+|------|---------|---------------------|
+| `tests/test_[feature].py` | CREATE - Test coverage | pytest-based tests |
+| `README.md` | MODIFY - Documentation | Add feature usage section |
+| `docs/[feature].md` | CREATE - Detailed docs | Optional, for complex features |
+
+### 0.5.3 Implementation Patterns
+
+**Pattern 1: Simple Endpoint Addition**
+
+For adding a single new endpoint without complex business logic:
+
+```python
+# Add to app.py before catch-all route
+
+@app.route('/new-endpoint')
+def new_endpoint():
+    return Response('New response', mimetype='text/plain')
+```
+
+**Pattern 2: Feature Module Addition**
+
+For adding a feature with business logic:
+
+```
+project/
+├── app.py              # Import and register blueprint
+├── features/
+│   └── [feature]/
+│       ├── __init__.py
+│       ├── routes.py   # Feature routes as Blueprint
+│       └── service.py  # Business logic
+```
+
+**Pattern 3: Database-Connected Feature**
+
+For features requiring data persistence:
+
+```python
+# In app.py
+
+import os
+from flask_sqlalchemy import SQLAlchemy
+
+app.config['SQLALCHEMY_DATABASE_URI'] = (
+    f"postgresql://{os.environ.get('DB_HOST')}/db"
+)
+db = SQLAlchemy(app)
+```
+
+### 0.5.4 Critical Implementation Rules
+
+**Must Preserve:**
+
+| Element | Current Value | Reason |
+|---------|---------------|--------|
+| Root endpoint response | "Hello, World!\n" | Backprop integration test |
+| HTTP status 200 | Default Flask | Backprop verification |
+| Content-Type | text/plain | Backprop verification |
+| Port binding | 3000 | Backprop test configuration |
+| Host binding | 127.0.0.1 | Backprop test configuration |
+
+**Must Avoid:**
+
+| Anti-Pattern | Risk |
+|--------------|------|
+| Replacing catch-all route | Breaks Backprop integration |
+| Changing default port | Breaks existing test scripts |
+| Removing "Hello, World!" response | Breaks verification tests |
+| Adding authentication to root path | Breaks unauthenticated tests |
+
+### 0.5.5 Route Priority Management
+
+Flask processes routes in registration order. For new features:
+
+**Correct Order:**
+
+```python
+# 1. Health check (specific path)
+
+@app.route('/health')
+def health_check():
+    return jsonify({'status': 'healthy'})
+
+#### API routes (specific paths)
+
+@app.route('/api/v1/resource')
+def api_resource():
+    return jsonify({'data': []})
+
+#### Existing catch-all (LAST)
+
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def hello(path):
+    return Response('Hello, World!\n', mimetype='text/plain')
+```
+
+### 0.5.6 Dependency Installation Workflow
+
+When adding new feature dependencies:
+
+```bash
+# 1. Activate virtual environment
+
+source venv/bin/activate
+
+#### Install new dependency
+
+pip install [new-package]>=version
+
+#### Update requirements.txt
+
+pip freeze | grep -i [package-name] >> requirements.txt
+#### OR manually add with version constraint
+
+#### Verify installation
+
+python -c "import [package_name]; print([package_name].__version__)"
+```
+
+### 0.5.7 User Interface Design
+
+**Figma URLs Provided:** None
+
+**Current UI State:** This is a backend HTTP server with no frontend UI.
+
+**If UI is Required:**
+
+| Approach | Implementation |
+|----------|----------------|
+| Server-rendered | Jinja2 templates (already included with Flask) |
+| Static files | Flask static file serving |
+| SPA integration | CORS headers, API endpoints |
+
+### 0.5.8 Verification and Testing
+
+**Manual Verification Commands:**
+
+```bash
+# Start server
+
+python app.py
+
+#### Test existing endpoint (preserve this)
+
+curl http://127.0.0.1:3000/
+#### Expected: Hello, World!
+
+#### Test new endpoint (when added)
+
+curl http://127.0.0.1:3000/new-feature
+```
+
+**Automated Testing Setup:**
+
+```bash
+# Install test dependencies
+
+pip install pytest pytest-flask
+
+#### Run tests
+
+pytest tests/ -v
+```
 
 ## 0.6 Scope Boundaries
 
 ### 0.6.1 Exhaustively In Scope
 
-**Source Transformations:**
+**Core Application Files:**
 
-| Pattern | Files Matched | Action |
-|---------|--------------|--------|
-| `server.js` | Main HTTP server | DELETE after replacement |
-| `server - Copy.js` | Duplicate server file | DELETE |
-| `package.json` | npm package metadata | DELETE |
-| `package-lock.json` | npm lockfile | DELETE |
+| File/Pattern | Status | Purpose |
+|--------------|--------|---------|
+| `app.py` | MODIFY | Primary integration point for new features |
+| `requirements.txt` | MODIFY | Add new dependencies |
+| `README.md` | MODIFY | Update documentation with feature usage |
 
-**Target Creations:**
+**New Files to Create (when feature specified):**
 
-| Pattern | Files to Create | Action |
-|---------|----------------|--------|
-| `app.py` | Flask application | CREATE |
-| `requirements.txt` | Python dependencies | CREATE |
+| File Pattern | Purpose |
+|--------------|---------|
+| `services/**/*.py` | Business logic modules |
+| `models/**/*.py` | Data model definitions |
+| `tests/**/*.py` | Test coverage |
+| `config/*.py` | Feature configuration |
+| `docs/features/*.md` | Feature documentation |
 
-**Documentation Updates:**
+**Configuration Files:**
 
-| Pattern | Files | Action |
-|---------|-------|--------|
-| `README.md` | Project documentation | UPDATE |
+| File | Status | Purpose |
+|------|--------|---------|
+| `.env.example` | CREATE (if needed) | Document environment variables |
+| `config.py` | CREATE (if needed) | Centralized configuration |
+| `pytest.ini` | CREATE (if needed) | Test configuration |
 
-**Complete In-Scope File List:**
+**Environment Variables in Scope:**
 
-| File | Current Status | Migration Action | Priority |
-|------|----------------|------------------|----------|
-| `server.js` | EXISTS | DELETE | HIGH |
-| `server - Copy.js` | EXISTS | DELETE | HIGH |
-| `package.json` | EXISTS | DELETE | HIGH |
-| `package-lock.json` | EXISTS | DELETE | HIGH |
-| `README.md` | EXISTS | UPDATE | MEDIUM |
-| `app.py` | NEW | CREATE | HIGH |
-| `requirements.txt` | NEW | CREATE | HIGH |
+| Variable | Usage Status | Available For |
+|----------|--------------|---------------|
+| `DB_HOST` | Unused currently | Database integration features |
+| `DB_HOST1` | Unused currently | Database replica/secondary |
 
 ### 0.6.2 Explicitly Out of Scope
 
-**Files Excluded by User Request:**
+**Files That Must NOT Be Modified:**
 
-No explicit exclusions were requested by the user. The following files are excluded because they are not part of the Node.js server functionality being migrated:
-
-**Data Files (No Migration Required):**
-
-| File | Reason for Exclusion |
-|------|---------------------|
-| `industry.csv` | Static data file, not used by server.js |
+| File | Reason |
+|------|--------|
+| `server.js` | Legacy placeholder, empty |
+| `server - Copy.js` | Legacy placeholder, empty |
+| `package.json` | Legacy placeholder, empty |
+| `package-lock.json` | Legacy placeholder, empty |
+| `LoginTest.java` | Non-functional Java stub |
+| `LoginTest - Copy.java` | Non-functional Java stub |
+| `test.py.txt` | Empty placeholder |
+| `test.py - Copy.txt` | Empty placeholder |
+| `test.txt.txt` | Empty placeholder |
+| `industry.csv` | Static data file |
 | `industry - Copy.csv` | Duplicate data file |
 
-**Non-Functional Files:**
+**Documentation Files (Reference Only):**
 
-| File | Reason for Exclusion |
-|------|---------------------|
-| `LoginTest.java` | Non-functional Java stub with syntax errors |
-| `LoginTest - Copy.java` | Duplicate non-functional Java stub |
-| `test.py.txt` | Empty placeholder file (0 bytes) |
-| `test.py - Copy.txt` | Empty placeholder file (0 bytes) |
-| `test.txt.txt` | Empty placeholder file (0 bytes) |
+| File | Status |
+|------|--------|
+| `blitzy/documentation/Project Guide.md` | DO NOT MODIFY |
+| `blitzy/documentation/Technical Specifications.md` | DO NOT MODIFY |
 
 **Functionality Out of Scope:**
 
-| Item | Reason |
-|------|--------|
-| Database integration | Original server has no database connectivity |
-| Authentication | Original server has no authentication |
-| Multiple endpoints | Original server handles all paths identically |
-| Error handling framework | Original server uses default Node.js behavior |
-| Test framework setup | Beyond scope of 1:1 feature migration |
-| Docker/containerization | Not present in original implementation |
-| CI/CD configuration | Not present in original implementation |
+| Exclusion | Rationale |
+|-----------|-----------|
+| Modifying "Hello, World!" response | Protected for Backprop testing |
+| Changing port from 3000 | Breaking change to test infrastructure |
+| Changing host from 127.0.0.1 | Breaking change to test infrastructure |
+| Removing catch-all route | Breaks existing behavior |
+| Production WSGI configuration | Beyond current project scope |
+| Docker/containerization | Not in current architecture |
+| CI/CD pipeline setup | Not specified in requirements |
 
-### 0.6.3 Scope Validation Matrix
+### 0.6.3 Scope Preservation Rules
 
-**Feature Coverage Verification:**
+**Must Preserve (Non-Negotiable):**
 
-| Original Feature | In Scope | Justification |
-|-----------------|----------|---------------|
-| HTTP server on localhost:3000 | ✅ YES | Core functionality |
-| "Hello, World!" response | ✅ YES | Core functionality |
-| HTTP 200 status | ✅ YES | Core functionality |
-| text/plain content type | ✅ YES | Core functionality |
-| Console startup message | ✅ YES | Core functionality |
-| npm package metadata | ✅ YES | Transformed to requirements.txt |
-| README documentation | ✅ YES | Updated for Flask |
+| Element | Value | Enforcement |
+|---------|-------|-------------|
+| Root response body | "Hello, World!\n" | Exact string including newline |
+| Root HTTP status | 200 | Backprop test verification |
+| Root Content-Type | text/plain | Backprop test verification |
+| Port binding | 3000 | Test infrastructure dependency |
+| Host binding | 127.0.0.1 | Test infrastructure dependency |
+| Catch-all routing | All paths work | Test scenario coverage |
 
-**Non-Feature Scope Decisions:**
+**May Extend:**
 
-| Item | Status | Rationale |
-|------|--------|-----------|
-| Port configuration | IN SCOPE | Must match original (3000) |
-| Host binding | IN SCOPE | Must match original (127.0.0.1) |
-| HTTPS/TLS | OUT OF SCOPE | Not in original |
-| Graceful shutdown | OUT OF SCOPE | Not in original |
-| Health checks | OUT OF SCOPE | Not in original |
-| Logging framework | OUT OF SCOPE | Original uses simple console.log |
+| Element | Extension Type | Constraint |
+|---------|---------------|------------|
+| New routes | Add specific paths | Must be before catch-all |
+| New dependencies | Add to requirements.txt | Must not conflict with Flask 3.1+ |
+| New modules | Create new .py files | Follow Python best practices |
+| New tests | Create test files | Use pytest framework |
+| Documentation | Update README.md | Keep existing sections intact |
 
-### 0.6.4 Boundary Enforcement Rules
+### 0.6.4 Scope Validation Checklist
 
-**Strict Boundaries:**
+Before implementing any feature, verify:
 
-- **DO** migrate all HTTP server functionality from `server.js`
-- **DO** create equivalent Python dependency management
-- **DO** update documentation to reflect new tech stack
-- **DO NOT** add features not present in the original
-- **DO NOT** modify behavior beyond tech stack translation
-- **DO NOT** touch files unrelated to the Node.js server
+| Check | Question | Required Answer |
+|-------|----------|-----------------|
+| Backward Compatibility | Does `/` still return "Hello, World!\n"? | YES |
+| Port Preservation | Does server still bind to 3000? | YES |
+| Host Preservation | Does server still bind to 127.0.0.1? | YES |
+| No Breaking Changes | Do all existing tests pass? | YES |
+| Dependency Compatibility | Are new deps Flask 3.1+ compatible? | YES |
+| Documentation Updated | Is README.md updated? | YES |
 
-**Behavioral Boundaries:**
+### 0.6.5 File Scope Summary
 
-| Behavior | Boundary Rule |
-|----------|--------------|
-| Response body | Must be exactly `'Hello, World!\n'` (with newline) |
-| Status code | Must be 200 |
-| Content-Type | Must be `text/plain` |
-| Port | Must be 3000 |
-| Host | Must be 127.0.0.1 |
-| Routing | Must handle all paths (catch-all) |
+**Total Files Currently in Repository:** 15
 
-## 0.7 Refactoring Rules
+| Category | Count | Status |
+|----------|-------|--------|
+| Active application files | 3 | IN SCOPE |
+| Legacy placeholders | 4 | OUT OF SCOPE |
+| Non-functional stubs | 2 | OUT OF SCOPE |
+| Static data files | 2 | OUT OF SCOPE |
+| Empty placeholders | 3 | OUT OF SCOPE |
+| Documentation | 2 | REFERENCE ONLY |
+
+**New Files (Template for Feature Addition):**
+
+| Category | Estimated Count | Status |
+|----------|-----------------|--------|
+| Feature source files | 1-5 | TO CREATE |
+| Test files | 1-3 | TO CREATE |
+| Configuration files | 0-2 | TO CREATE |
+| Documentation files | 1-2 | TO CREATE |
+
+## 0.7 Rules for Feature Addition
 
 ### 0.7.1 User-Specified Rules
 
-Based on the user's explicit requirements, the following rules must be strictly observed:
+**Repository Warning (from README.md):**
 
-**Primary Directive:**
-> "keeping every feature and functionality exactly as in the original Node.js project"
+> "Python Flask test project for backprop integration. Do not touch!"
 
-**Secondary Directive:**
-> "Ensure the rewritten version fully matches the behavior and logic of the current implementation"
+**Interpretation:**
+
+This warning indicates the repository is a protected test artifact. New features must:
+- Preserve existing test validation capabilities
+- Be additive rather than replacement-based
+- Not interfere with Backprop integration testing
 
 ### 0.7.2 Behavioral Preservation Rules
 
 | Rule ID | Rule | Enforcement |
 |---------|------|-------------|
-| BPR-001 | Response body must be exactly `'Hello, World!\n'` | Exact string match required |
-| BPR-002 | HTTP status code must be 200 | Explicit or default return |
-| BPR-003 | Content-Type header must be `text/plain` | Explicit MIME type setting |
-| BPR-004 | Server must bind to `127.0.0.1:3000` | Exact host/port configuration |
-| BPR-005 | All HTTP request paths must return identical response | Catch-all routing required |
-| BPR-006 | Server startup must log URL to console | Startup notification required |
+| BPR-001 | Root endpoint must return "Hello, World!\n" | Exact string match |
+| BPR-002 | HTTP status code must be 200 for root | Default or explicit |
+| BPR-003 | Content-Type must be text/plain for root | Explicit mimetype |
+| BPR-004 | Server must bind to 127.0.0.1:3000 | No port/host changes |
+| BPR-005 | Catch-all routing must remain functional | Route priority maintained |
+| BPR-006 | Flask startup logging preserved | Default Flask behavior |
 
-### 0.7.3 Technical Transformation Rules
+### 0.7.3 Technical Implementation Rules
 
 | Rule ID | Rule | Application |
 |---------|------|-------------|
-| TTR-001 | Use Flask framework as HTTP server | Replace Node.js http module |
-| TTR-002 | Use Python 3.9+ runtime | Flask 3.x requirement |
-| TTR-003 | Create `requirements.txt` for dependencies | Python package management standard |
-| TTR-004 | Use `app.py` as entry point | Flask convention |
-| TTR-005 | Implement catch-all route pattern | Match original behavior |
-| TTR-006 | No additional frameworks or libraries | Minimal dependency footprint |
+| TIR-001 | Use Flask 3.x patterns | Modern Flask conventions |
+| TIR-002 | Python 3.9+ compatibility required | Flask 3.x requirement |
+| TIR-003 | New routes before catch-all | Flask route priority |
+| TIR-004 | Explicit dependency versioning | requirements.txt updates |
+| TIR-005 | No conflicting Flask extensions | Verify compatibility |
+| TIR-006 | Follow PEP 8 style | Python code standards |
 
 ### 0.7.4 Code Quality Rules
 
 | Rule ID | Rule | Implementation |
 |---------|------|----------------|
-| CQR-001 | Follow PEP 8 style guidelines | Python code formatting |
-| CQR-002 | Use explicit main guard | `if __name__ == '__main__':` |
-| CQR-003 | Use UPPERCASE for constants | `HOST`, `PORT` constants |
-| CQR-004 | Include appropriate imports | Only import what is used |
-| CQR-005 | No unused code or imports | Clean implementation |
+| CQR-001 | Follow PEP 8 style guidelines | Python formatting |
+| CQR-002 | Use type hints where applicable | Python 3.9+ typing |
+| CQR-003 | Document functions with docstrings | Google/NumPy style |
+| CQR-004 | Keep imports organized | Standard → Third-party → Local |
+| CQR-005 | No unused imports | Clean implementation |
+| CQR-006 | Explicit error handling | Try/except where needed |
 
-### 0.7.5 Migration Constraints
+### 0.7.5 Integration Rules
 
-| Constraint | Description | Impact |
-|------------|-------------|--------|
-| No feature additions | Do not add features not in original | Prevents scope creep |
-| No feature removals | All original features must be present | Ensures parity |
-| Port preservation | Must use port 3000, not Flask default 5000 | Configuration override |
-| Host preservation | Must use 127.0.0.1, not Flask default | Configuration override |
-| Response exactness | Newline character must be preserved | String accuracy |
+| Rule ID | Rule | Rationale |
+|---------|------|-----------|
+| INT-001 | Use environment variables for config | `DB_HOST`, `DB_HOST1` available |
+| INT-002 | Graceful degradation for optional features | Don't break core functionality |
+| INT-003 | Document all integration points | README.md updates |
+| INT-004 | Test integration with existing endpoints | Preserve Backprop testing |
 
-### 0.7.6 Verification Rules
+### 0.7.6 Security Considerations
 
-**Pre-Migration Verification:**
+| Rule ID | Rule | Application |
+|---------|------|-------------|
+| SEC-001 | No hardcoded secrets | Use environment variables |
+| SEC-002 | Input validation on new endpoints | Prevent injection attacks |
+| SEC-003 | Secure database connections | If DB features added |
+| SEC-004 | CORS configuration if API expanded | Flask-CORS if needed |
 
-| Check | Criteria |
-|-------|----------|
-| Source analysis complete | All source files identified |
-| Target design approved | All target files specified |
-| Dependencies identified | Flask version confirmed |
+### 0.7.7 Testing Requirements
 
-**Post-Migration Verification:**
+| Requirement | Implementation |
+|-------------|----------------|
+| Minimum test coverage | 80% for new code |
+| Test framework | pytest |
+| Integration tests | pytest-flask |
+| Existing behavior verification | Test root endpoint still works |
 
-| Check | Criteria | Method |
-|-------|----------|--------|
-| Server starts | Flask app runs without errors | `python app.py` |
-| Port binding | Server binds to 127.0.0.1:3000 | Startup log verification |
-| Response body | Returns "Hello, World!\n" | HTTP GET request |
-| Status code | Returns 200 | HTTP response verification |
-| Content-Type | Returns text/plain | HTTP header verification |
-| Catch-all routing | All paths return same response | Multiple path testing |
+**Test Verification Template:**
 
-### 0.7.7 Exception Handling
+```python
+def test_root_endpoint_preserved(client):
+    """Verify existing behavior is preserved."""
+    response = client.get('/')
+    assert response.status_code == 200
+    assert response.data == b'Hello, World!\n'
+    assert response.content_type == 'text/plain; charset=utf-8'
+```
 
-**Acceptable Deviations:**
+### 0.7.8 Documentation Requirements
 
-| Deviation | Reason | Acceptable |
-|-----------|--------|------------|
-| Different startup log format | Flask has built-in startup message | ✅ Yes |
-| Additional Flask debug output | Development mode behavior | ✅ Yes |
-| Different shutdown behavior | Framework difference | ✅ Yes |
+| Requirement | Location |
+|-------------|----------|
+| Feature usage documentation | README.md |
+| API endpoint documentation | README.md or docs/ |
+| Configuration documentation | README.md |
+| Environment variable documentation | .env.example |
 
-**Unacceptable Deviations:**
+### 0.7.9 Verification Checklist
 
-| Deviation | Reason | Status |
-|-----------|--------|--------|
-| Different response body | User requirement | ❌ No |
-| Different status code | User requirement | ❌ No |
-| Different Content-Type | User requirement | ❌ No |
-| Different port | User requirement | ❌ No |
-| Path-specific responses | Changes original behavior | ❌ No |
+**Pre-Implementation:**
+
+| Check | Status |
+|-------|--------|
+| Feature requirements clearly defined | □ |
+| Dependencies identified | □ |
+| Integration points mapped | □ |
+| Scope boundaries confirmed | □ |
+
+**Post-Implementation:**
+
+| Check | Status |
+|-------|--------|
+| Root endpoint returns "Hello, World!\n" | □ |
+| HTTP 200 status on root | □ |
+| Content-Type text/plain on root | □ |
+| Server binds to 127.0.0.1:3000 | □ |
+| All tests passing | □ |
+| Documentation updated | □ |
+
+### 0.7.10 Exception Handling
+
+**Acceptable Exceptions:**
+
+| Exception | Condition |
+|-----------|-----------|
+| Additional routes | May add before catch-all |
+| New dependencies | Must be Flask 3.x compatible |
+| New response types | On new endpoints only |
+| Different status codes | On new endpoints only |
+
+**Unacceptable Exceptions:**
+
+| Exception | Reason |
+|-----------|--------|
+| Modifying root response | Breaks Backprop tests |
+| Changing port | Breaks test infrastructure |
+| Removing catch-all | Breaks universal path handling |
+| Incompatible dependencies | May break Flask server |
 
 ## 0.8 References
 
@@ -807,109 +1038,159 @@ Based on the user's explicit requirements, the following rules must be strictly 
 
 **Core Application Files:**
 
-| File Path | Purpose | Lines | Relevance |
-|-----------|---------|-------|-----------|
-| `server.js` | Primary Node.js HTTP server | 15 | HIGH - Main transformation source |
-| `server - Copy.js` | Duplicate of server.js | 15 | LOW - To be deleted |
-| `package.json` | npm package metadata | 11 | HIGH - Dependency information |
-| `package-lock.json` | npm dependency lock | 13 | MEDIUM - Confirms zero dependencies |
-| `README.md` | Project documentation | 2 | MEDIUM - To be updated |
+| File Path | Lines | Purpose | Analysis Status |
+|-----------|-------|---------|-----------------|
+| `app.py` | 61 | Flask HTTP server entry point | ✅ Fully analyzed |
+| `requirements.txt` | 1 | Python dependency manifest | ✅ Fully analyzed |
+| `README.md` | 31 | Project documentation | ✅ Fully analyzed |
 
-**Static Data Files:**
+**Legacy and Placeholder Files:**
 
-| File Path | Purpose | Lines | Relevance |
-|-----------|---------|-------|-----------|
-| `industry.csv` | Industry category vocabulary | 45 | LOW - Out of scope |
-| `industry - Copy.csv` | Duplicate data file | 45 | LOW - Out of scope |
+| File Path | Status | Analysis Notes |
+|-----------|--------|----------------|
+| `package.json` | Empty (0 bytes) | Legacy Node.js placeholder |
+| `package-lock.json` | Empty (0 bytes) | Legacy npm lockfile |
+| `server.js` | Empty (0 bytes) | Legacy Node.js placeholder |
+| `server - Copy.js` | Empty (0 bytes) | Duplicate placeholder |
+| `LoginTest.java` | Non-functional | Java stub with syntax errors |
+| `LoginTest - Copy.java` | Non-functional | Duplicate Java stub |
+| `test.py.txt` | Empty (0 bytes) | Placeholder file |
+| `test.py - Copy.txt` | Empty (0 bytes) | Placeholder file |
+| `test.txt.txt` | Empty (0 bytes) | Placeholder file |
 
-**Other Repository Files:**
+**Data Files:**
 
-| File Path | Purpose | Status |
-|-----------|---------|--------|
-| `LoginTest.java` | Non-functional Java stub | OUT OF SCOPE |
-| `LoginTest - Copy.java` | Duplicate Java stub | OUT OF SCOPE |
-| `test.py.txt` | Empty placeholder | OUT OF SCOPE |
-| `test.py - Copy.txt` | Empty placeholder | OUT OF SCOPE |
-| `test.txt.txt` | Empty placeholder | OUT OF SCOPE |
+| File Path | Content | Relevance |
+|-----------|---------|-----------|
+| `industry.csv` | 44 industry categories | Available for feature use |
+| `industry - Copy.csv` | Duplicate of above | Out of scope |
 
-### 0.8.2 Technical Specification Sections Referenced
+**Documentation Files:**
 
-| Section | Purpose |
+| File Path | Purpose | Analysis Status |
+|-----------|---------|-----------------|
+| `blitzy/documentation/Project Guide.md` | Migration runbook | ✅ Referenced |
+| `blitzy/documentation/Technical Specifications.md` | Technical specification | ✅ Referenced |
+
+### 0.8.2 Folder Structure Examined
+
+| Folder Path | Contents | Status |
+|-------------|----------|--------|
+| `/` (root) | 12 files, 1 folder | ✅ Fully analyzed |
+| `/blitzy/` | 1 subfolder (documentation) | ✅ Fully analyzed |
+| `/blitzy/documentation/` | 2 markdown files | ✅ Fully analyzed |
+
+### 0.8.3 Technical Specification Sections Referenced
+
+| Section | Key Information Retrieved |
+|---------|--------------------------|
+| 1.1 Executive Summary | Project purpose, stakeholders, migration context |
+| 1.3 Scope | In-scope/out-of-scope boundaries, exclusions |
+| 2.2 Feature Catalog | F-001 Hello World HTTP Server feature details |
+
+### 0.8.4 External Resources Consulted
+
+**Package Version Verification:**
+
+| Resource | Information Retrieved |
+|----------|----------------------|
+| PyPI (Flask) | Flask 3.1.2 is latest stable version |
+| Flask documentation | Requires Python ≥3.9 |
+| pip freeze output | Verified installed dependency versions |
+
+**Installed Package Versions Verified:**
+
+| Package | Version |
 |---------|---------|
-| 3.2 Programming Languages | Understanding current Node.js implementation details |
-| 1.3 Scope | Current project scope and limitations |
-| 5.2 Component Details | HTTP server component architecture |
+| Flask | 3.1.2 |
+| Werkzeug | 3.1.5 |
+| Jinja2 | 3.1.6 |
+| itsdangerous | 2.2.0 |
+| click | 8.3.1 |
+| blinker | 1.9.0 |
+| MarkupSafe | 3.0.3 |
 
-### 0.8.3 External Resources Consulted
+### 0.8.5 Attachments and User-Provided Files
 
-**Flask Documentation and Package Information:**
+**File Attachments:**
 
-| Resource | URL | Key Information |
-|----------|-----|-----------------|
-| Flask on PyPI | https://pypi.org/project/Flask/ | Flask 3.1.2 latest, requires Python >=3.9 |
-| Flask Documentation | https://flask.palletsprojects.com/ | Framework best practices |
-| Flask GitHub Releases | https://github.com/pallets/flask/releases | Version history and changelog |
+| Status | Details |
+|--------|---------|
+| Attachments Provided | None |
+| Attachment Location | `/tmp/environments_files` - Empty |
 
-**Migration Best Practices:**
+**Figma URLs:**
 
-| Resource | Key Insight |
-|----------|-------------|
-| "Transforming a Node.js Backend to Python Flask" | Route migration requires syntax adjustment while keeping logic similar |
-| "Flask for Node Developers" | Flask is similar to Express, use `app.py` as entry point |
-| "Python Flask vs Node.js Express" | Flask's Pythonic simplicity makes it accessible for migration |
+| Status | Details |
+|--------|---------|
+| Figma URLs Provided | None |
+| UI Design Requirements | Not applicable |
 
-### 0.8.4 Attachments and User-Provided Files
+### 0.8.6 Environment Configuration
 
-**Attachments Provided:**
-- No file attachments were provided by the user
-
-**Figma URLs Provided:**
-- No Figma design URLs were provided
-
-**Environment Files:**
-- Location: `/tmp/environments_files`
-- Status: No attachments found in this directory
-
-### 0.8.5 Environment Configuration
-
-**Environment Variables Available:**
+**Environment Variables:**
 
 | Variable | Status | Usage |
 |----------|--------|-------|
-| `DB_HOST` | Set in environment | Not used in migration |
-| `DB_HOST1` | Set in environment | Not used in migration |
+| `DB_HOST` | Available in environment | Not used by current application |
+| `DB_HOST1` | Available in environment | Not used by current application |
 
-**Secrets Provided:**
-- No secrets were provided for this project
+**Secrets:**
 
-### 0.8.6 Search and Analysis Summary
+| Status | Details |
+|--------|---------|
+| Secrets Provided | None |
+
+**Runtime Environment:**
+
+| Component | Version | Status |
+|-----------|---------|--------|
+| Python | 3.12.3 | ✅ Installed and verified |
+| pip | 25.3 | ✅ Available |
+| Virtual Environment | venv | ✅ Created at /tmp/env_test |
+
+### 0.8.7 Search and Analysis Summary
 
 **Repository Searches Conducted:**
 
 | Search Type | Target | Result |
 |-------------|--------|--------|
-| `.blitzyignore` lookup | Entire filesystem | No files found |
-| Root folder analysis | Repository root (`/`) | 12 files identified |
-| JavaScript files | `*.js` | 2 files found |
-| Package files | `package*.json` | 2 files found |
-| Documentation | `*.md` | 1 file found |
+| .blitzyignore lookup | Entire filesystem | No files found |
+| Root folder analysis | Repository root | 12 files, 1 folder identified |
+| Python files | `*.py` | 1 file (app.py) |
+| Dependency files | `requirements.txt` | 1 file found |
+| Configuration files | `*.yaml`, `*.yml`, `*.toml` | None found |
+| Documentation | `*.md` | 3 files found |
 
-**Web Searches Conducted:**
+**Tool Invocations:**
 
-| Query | Purpose | Key Finding |
-|-------|---------|-------------|
-| "migrate Node.js server to Python Flask best practices" | Migration patterns | Map routes from Node.js to Flask decorators |
-| "Flask latest version 2025 Python requirements" | Version information | Flask 3.1.2, requires Python >=3.9 |
+| Tool | Invocations | Purpose |
+|------|-------------|---------|
+| `bash` | 6 | Environment setup, file system exploration |
+| `get_source_folder_contents` | 3 | Folder structure analysis |
+| `read_file` | 5 | File content retrieval |
+| `get_tech_spec_section` | 3 | Technical specification context |
 
-### 0.8.7 Document Cross-References
+### 0.8.8 Analysis Gaps Identified
 
-| Section | Cross-Reference |
-|---------|-----------------|
-| 0.1 Intent Clarification | References user requirements directly |
-| 0.2 Source Analysis | References repository file contents |
-| 0.3 Target Design | References web search findings |
-| 0.4 Transformation Mapping | References both source analysis and target design |
-| 0.5 Dependency Inventory | References package.json and PyPI search |
-| 0.6 Scope Boundaries | References all previous sections |
-| 0.7 Refactoring Rules | References user directives from 0.1 |
+**Critical Gap:**
+
+| Gap | Impact | Resolution Required |
+|-----|--------|---------------------|
+| No specific feature requested | Cannot create concrete implementation plan | User must specify desired feature |
+
+The user's input describes the existing codebase but does not specify what new feature should be added. This Agent Action Plan provides the comprehensive framework for feature addition, but specific implementation details await feature requirements clarification.
+
+### 0.8.9 Document Cross-References
+
+| Section | Dependencies |
+|---------|--------------|
+| 0.1 Intent Clarification | User input, README.md |
+| 0.2 Repository Scope Discovery | All repository files |
+| 0.3 Dependency Inventory | requirements.txt, pip freeze |
+| 0.4 Integration Analysis | app.py structure |
+| 0.5 Technical Implementation | All previous sections |
+| 0.6 Scope Boundaries | 0.2 Repository Scope Discovery |
+| 0.7 Rules for Feature Addition | README.md, behavioral requirements |
+| 0.8 References | All analysis performed |
 
